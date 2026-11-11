@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tapline Platform Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: phone-first app shell. Concept header, then a three-tab working prototype (Event, Card, Hardware), then the case vs. Popl. */
+:root{
+  --bg:#f3f5f7; --surface:#ffffff; --ink:#14202b; --muted:#5b6b78; --line:#dbe2e8;
+  --accent:#0b6e69; --accent-soft:#d8efed; --signal:#c2410c;
+  --good:#15803d; --warn:#b45309; --bad:#b91c1c;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e151b; --surface:#16212a; --ink:#e7eef3; --muted:#9aabb8; --line:#273743;
+  --accent:#4cc3ba; --accent-soft:#163b3a; --signal:#fb923c;
+  --good:#4ade80; --warn:#fbbf24; --bad:#f87171; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e151b; --surface:#16212a; --ink:#e7eef3; --muted:#9aabb8; --line:#273743;
+  --accent:#4cc3ba; --accent-soft:#163b3a; --signal:#fb923c;
+  --good:#4ade80; --warn:#fbbf24; --bad:#f87171; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,6vw,40px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0;max-width:65ch}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);font-size:16px}
+header{display:flex;flex-direction:column;gap:10px}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tabs button{flex:1;font:600 14px var(--body);color:var(--muted);background:none;border:0;border-radius:9px;padding:10px 6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface)}
+.tabs button:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font:700 24px var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.lead{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.lead:first-of-type{border-top:0}
+.score{font:600 15px var(--mono);text-align:center;border-radius:8px;padding:6px 0;font-variant-numeric:tabular-nums}
+.hot{background:color-mix(in srgb,var(--signal) 16%,transparent);color:var(--signal)}
+.warm{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.cool{background:var(--accent-soft);color:var(--accent)}
+.lead small{display:block;color:var(--muted);font-size:12.5px}
+.lead .meta{min-width:0}
+.pill{font:500 11px var(--mono);letter-spacing:.04em;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.btn{font:600 13px var(--body);border-radius:9px;padding:8px 12px;border:1px solid var(--accent);background:var(--accent);color:var(--surface);cursor:pointer}
+.btn.ghost{background:none;color:var(--accent)}
+.btn[disabled]{opacity:.55;cursor:default}
+.draft{font-size:13.5px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink)}
+.bar{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent)}
+.funnel{display:flex;flex-direction:column;gap:10px}
+.funnel .row span:last-child{font:500 13px var(--mono);font-variant-numeric:tabular-nums}
+.cardwrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:620px){.cardwrap{grid-template-columns:1fr}}
+.biz{aspect-ratio:1.586;max-width:100%;border-radius:14px;padding:18px;color:#f4f8f8;background:linear-gradient(135deg,#0b3d3a,#0b6e69 70%,#1d8f86);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.biz .nm{font:700 20px var(--display)}
+.biz .tl{font-size:13px;opacity:.85}
+.biz .chip{font:500 10px var(--mono);letter-spacing:.1em;opacity:.8}
+.biz .seal{position:absolute;right:16px;top:16px;width:34px;height:34px;border:2px solid rgba(255,255,255,.6);border-radius:50%;display:grid;place-items:center;font:600 10px var(--mono)}
+label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+input[type=text]{font:15px var(--body);padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+.toggle input{width:20px;height:20px;accent-color:var(--accent)}
+.verify{font:500 12.5px var(--mono);padding:10px;border-radius:9px;background:var(--bg);border:1px dashed var(--line);overflow-x:auto;white-space:nowrap}
+.ok{color:var(--good)} .no{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+.tbl{overflow-x:auto}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{font-size:12.5px;color:var(--muted)}
+.gap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.gap{grid-template-columns:1fr}}
+.gap .box h3{display:flex;gap:8px;align-items:baseline}
+.tag{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--signal)}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+a{color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .5s ease}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Concept · In-person GTM</div>
+  <h1>Tapline: what Popl would look like if follow-up came first</h1>
+  <p class="lede">Popl is very good at capturing a lead at the booth. Tapline is built around what happens in the 48 hours after, plus hardware that can't be cloned and pricing that doesn't punish you for scanning more badges.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button role="tab" id="t-event" aria-selected="true" aria-controls="p-event">Event</button>
+  <button role="tab" id="t-card" aria-selected="false" aria-controls="p-card">Card</button>
+  <button role="tab" id="t-hw" aria-selected="false" aria-controls="p-hw">Hardware</button>
+</div>
+
+<!-- EVENT -->
+<section class="panel" id="p-event" role="tabpanel" aria-labelledby="t-event">
+  <div class="row"><h2>Dreamforce booth · Day 2</h2><span class="pill">Sample data</span></div>
+  <div class="stats">
+    <div class="stat"><b>214</b><span>Leads captured</span></div>
+    <div class="stat"><b>6 min</b><span>Median speed to first email</span></div>
+    <div class="stat"><b>38</b><span>Meetings booked</span></div>
+    <div class="stat"><b>$1.9M</b><span>Pipeline sourced</span></div>
+  </div>
+
+  <div class="box">
+    <div class="row"><h3>Follow-up queue</h3><span class="note">Rep approves, Tapline sends</span></div>
+    <div id="leads"></div>
+    <div class="draft" id="draft"></div>
+  </div>
+
+  <div class="box">
+    <h3>Booth to closed-won</h3>
+    <p class="note">Popl stops at "synced to CRM." Tapline reads opportunity stages back so the event gets credit (or doesn't) a quarter later.</p>
+    <div class="funnel" id="funnel"></div>
+  </div>
+
+  <div class="box">
+    <div class="row"><h3>Rep adoption</h3><span class="note">The CSM view</span></div>
+    <div id="adopt"></div>
+  </div>
+</section>
+
+<!-- CARD -->
+<section class="panel" id="p-card" role="tabpanel" aria-labelledby="t-card" hidden>
+  <h2>A card that proves it's real</h2>
+  <div class="cardwrap">
+    <div class="biz" aria-label="Card preview">
+      <div class="seal">424</div>
+      <div><div class="nm" id="cName">Henrik Ampel</div><div class="tl" id="cTitle">Senior Customer Success Manager</div></div>
+      <div class="chip">TAP · SCAN · WALLET</div>
+    </div>
+    <div class="box">
+      <label for="inName">Name<input type="text" id="inName" value="Henrik Ampel"></label>
+      <label for="inTitle">Title<input type="text" id="inTitle" value="Senior Customer Success Manager"></label>
+      <div class="toggle"><span>Lock card to company profile (HR sync)</span><input type="checkbox" id="lock" checked></div>
+      <div class="toggle"><span>Share via Wallet pass when there's no NFC</span><input type="checkbox" id="wallet" checked></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="row"><h3>Simulate a tap</h3><div class="row"><button class="btn" id="tapReal">Genuine card</button><button class="btn ghost" id="tapClone">Cloned card</button></div></div>
+    <div class="verify" id="verify">Tap a card to see the server check.</div>
+    <p class="note">Each tap on an NXP NTAG 424 DNA chip produces a one-time signed URL (SUN message). A copied tag replays an old counter, so the server rejects it. Popl currently tells Amazon buyers to "avoid fake knockoffs"; this makes knockoffs not work.</p>
+  </div>
+  <div class="box">
+    <h3>Fleet controls</h3>
+    <ul>
+      <li>Rep leaves the company: card is reassigned or killed from the admin console, same day as the HR offboarding event.</li>
+      <li>Lost card: one-tap revoke, replacement ships with the same profile.</li>
+      <li>Every physical card has a serial, owner and last-tap date, so IT can audit hardware like laptops.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- HARDWARE -->
+<section class="panel" id="p-hw" role="tabpanel" aria-labelledby="t-hw" hidden>
+  <h2>Where Popl's hardware comes from</h2>
+  <div class="box">
+    <ul>
+      <li><b>Sales channel:</b> Popl says its NFC accessories (cards, phone tags, wristbands, keychains) are sold only through Amazon.</li>
+      <li><b>Manufacturer:</b> not disclosed. Amazon lists "Popl" as the manufacturer, which is the brand, not the factory. I couldn't find public import records under Popl Co.</li>
+      <li><b>IP:</b> Popl holds US patents (10949725, 11487982, 12050951) on a removable accessory with an NFC tag on a substrate, inventor Jason Alvarez-Cohen. The patent covers the design, so the factory can be swapped freely.</li>
+      <li><b>Known partner:</b> MOFT co-built a phone stand with a Popl NFC antenna (vegan leather, magnets, aluminum antenna).</li>
+      <li><b>Most likely setup:</b> contract manufacturing in the Shenzhen/Guangdong NFC card cluster, using commodity NXP NTAG chips. That's where the vast majority of NFC business cards and tags are made. Treat this as an informed inference, not a confirmed fact.</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Tapline sourcing plan</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Layer</th><th>Choice</th><th>Source</th><th>Unit cost</th></tr></thead>
+      <tbody>
+        <tr><td>Chip, premium</td><td>NXP NTAG 424 DNA (anti-clone)</td><td>NXP via Avnet / Arrow / DigiKey</td><td class="num">~$0.50–1.00</td></tr>
+        <tr><td>Chip, basic</td><td>NXP NTAG 216</td><td>Same distributors, or prelaminated inlays</td><td class="num">~$0.05–0.15</td></tr>
+        <tr><td>Inlay / antenna</td><td>Etched aluminum, wet or dry inlay</td><td>Inlay converters in Shenzhen or Guangzhou</td><td class="num">bundled</td></tr>
+        <tr><td>PVC / bio-paper cards</td><td>Printed, laminated, QR on back</td><td>Shenzhen card factories (ISO 9001, RoHS, CE)</td><td class="num">~$0.40–1.50</td></tr>
+        <tr><td>Metal cards</td><td>Steel or titanium with NFC window</td><td>Guangdong metal card shops</td><td class="num">~$4–12</td></tr>
+        <tr><td>Programming + QC</td><td>Key load, URL, read test</td><td>In-house in the US (or Mexico)</td><td class="num">~$0.20</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Costs are planning estimates from distributor and marketplace listings (e.g. NTAG216 chips around $0.05 at 500 MOQ on Made-in-China). Get real quotes from 3 suppliers and order samples before committing.</p>
+  </div>
+
+  <div class="box">
+    <h3>Why split it this way</h3>
+    <ul>
+      <li>Buy chips from authorized NXP distributors, not the card factory. Counterfeit NTAGs are common and you can't run 424 DNA security on a fake.</li>
+      <li>Load the encryption keys yourself after import. The factory never holds them, which is a clean SOC 2 story.</li>
+      <li>Keep a second card supplier in Vietnam or Mexico so a tariff change doesn't halt enterprise orders.</li>
+      <li>Sell direct to Teams accounts with fleet pricing instead of Amazon only, so hardware shows up on the same invoice as seats.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Where Tapline beats Popl</h2>
+  <div class="gap">
+    <div class="box"><h3><span class="tag">Pricing</span></h3><p>Popl charges per badge scan on event plans, and G2 reviewers complain about features locked behind paid tiers. Tapline charges flat per event, unlimited scans.</p></div>
+    <div class="box"><h3><span class="tag">Follow-up</span></h3><p>Popl syncs the lead in about 9 seconds, then the rep is on their own. Tapline scores the lead and drafts the email from the rep's own booth notes.</p></div>
+    <div class="box"><h3><span class="tag">Attribution</span></h3><p>Tapline reads closed-won back from Salesforce or HubSpot, so "200x ROI" claims come from the customer's own CRM, not a case study.</p></div>
+    <div class="box"><h3><span class="tag">Hardware</span></h3><p>Signed taps stop clones, and cards are managed as a fleet tied to HR, the same system Popl already uses for seats.</p></div>
+  </div>
+  <p class="note">Popl facts from popl.co (pricing, FAQ, platform pages), G2 and Capterra reviews, the Justia patent listing, and the MOFT x Popl release.</p>
+</section>
+</div>
+
+<script>
+const leads=[
+ {n:"Dana Whitfield",c:"VP RevOps, Northwind Health",s:92,note:"Asked about Salesforce dedupe, wants pricing for 60 reps"},
+ {n:"Marcus Lee",c:"Field Marketing Lead, Brightline",s:74,note:"Runs 25 events a year, currently renting badge scanners"},
+ {n:"Priya Natarajan",c:"Sales Director, Corvel Systems",s:61,note:"Wants a demo after Q4 planning"},
+ {n:"Tom Reyes",c:"AE, Halden Logistics",s:33,note:"Individual user, curious about cards"}
+];
+const sent=new Set();
+function tier(s){return s>=80?"hot":s>=55?"warm":"cool"}
+function renderLeads(){
+  const el=document.getElementById("leads");
+  el.innerHTML=leads.map((l,i)=>`<div class="lead">
+    <div class="score ${tier(l.s)}">${l.s}</div>
+    <div class="meta"><b>${l.n}</b><small>${l.c}</small><small>"${l.note}"</small></div>
+    <button class="btn${sent.has(i)?' ghost':''}" data-i="${i}" ${sent.has(i)?'disabled':''}>${sent.has(i)?'Sent':'Review'}</button>
+  </div>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>showDraft(+b.dataset.i));
+}
+function showDraft(i){
+  const l=leads[i],first=l.n.split(" ")[0];
+  const d=document.getElementById("draft");
+  d.innerHTML=`<b>Draft to ${first}</b><br><br>Hi ${first}, good talking at the booth today. You mentioned: ${l.note.toLowerCase()}. I put together a short walkthrough on exactly that. Does Thursday at 10 or 2 work for 20 minutes?<br><br><button class="btn" id="send">Approve and send</button>`;
+  document.getElementById("send").onclick=()=>{sent.add(i);renderLeads();d.innerHTML=`<span class="ok">Sent to ${l.n}. Logged in CRM as activity on the event campaign.</span>`};
+}
+function renderFunnel(){
+  const f=[["Badge scans",214],["Enriched with work email",205],["Meetings booked",38],["Opportunities",17],["Closed-won",4]];
+  document.getElementById("funnel").innerHTML=f.map(([k,v])=>`<div><div class="row"><span>${k}</span><span>${v}</span></div><div class="bar"><i style="width:${Math.max(3,v/214*100)}%"></i></div></div>`).join("");
+}
+function renderAdopt(){
+  const r=[["West team",22,24],["East team",15,20],["Partners",4,12]];
+  document.getElementById("adopt").innerHTML=r.map(([k,a,t])=>{const p=Math.round(a/t*100),c=p>=80?'good':p>=60?'warn':'bad';return `<div><div class="row"><span>${k}</span><span class="pill" style="color:var(--${c});border-color:var(--${c})">${a}/${t} active · ${p}%</span></div></div>`}).join("")+`<p class="note">Partners are under 40%. Tapline flags it before renewal, not after.</p>`;
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>{x.setAttribute("aria-selected",x===b);document.getElementById(x.getAttribute("aria-controls")).hidden=x!==b});
+});
+const inN=document.getElementById("inName"),inT=document.getElementById("inTitle");
+inN.oninput=()=>document.getElementById("cName").textContent=inN.value||" ";
+inT.oninput=()=>document.getElementById("cTitle").textContent=inT.value||" ";
+let ctr=1041;
+document.getElementById("tapReal").onclick=()=>{ctr++;document.getElementById("verify").innerHTML=`tap.line/c/7F3A?ctr=${ctr}&cmac=${Math.random().toString(16).slice(2,10).toUpperCase()} <span class="ok">✓ genuine, counter advanced</span>`};
+document.getElementById("tapClone").onclick=()=>{document.getElementById("verify").innerHTML=`tap.line/c/7F3A?ctr=1041&cmac=9B2E04C1 <span class="no">✕ replayed counter, profile hidden</span>`};
+renderLeads();renderFunnel();renderAdopt();
+</script>
+</body>
+</html>
