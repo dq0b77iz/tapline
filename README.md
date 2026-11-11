@@ -1,15 +1,15 @@
 # Tapline
 
-A product concept for in-person go-to-market teams: what a Popl-style digital business card platform would look like if follow-up came first. It's a clickable prototype with sample data.
+A product concept for teams that meet people face to face: a smart NFC card platform where follow-up comes first. It's a clickable prototype with sample data for four industries: trade shows, real estate, home services and medical sales.
 
 ## What's in it
 
-- **Event:** a booth dashboard with a scored follow-up queue where the rep reviews and approves drafted emails, a booth-to-closed-won funnel that reads CRM stages back, and a rep adoption view.
+- **Follow-up:** pick an industry to see a scored follow-up queue where the rep reviews and approves drafted messages, a funnel from first tap to closed deal read back from the CRM, and a team adoption view.
 - **Card:** an editable card preview and a tap simulator. Genuine NXP NTAG 424 DNA cards produce a one-time signed URL, while a cloned card replays an old counter and gets rejected. Also covers fleet controls tied to HR offboarding.
-- **Hardware:** where Popl's NFC hardware likely comes from, plus a sourcing plan for Tapline with chip, inlay, card and programming costs.
-- **Where Tapline beats Popl:** pricing, follow-up, attribution and hardware.
+- **Hardware:** a sourcing plan with chip, inlay, card and programming costs, and why the supply chain is split the way it is.
+- **Why Tapline:** pricing, follow-up, attribution and hardware.
 
-All figures on the Event tab are sample data. Hardware costs are planning estimates, not quotes.
+All figures on the Follow-up tab are sample data. Hardware costs are planning estimates, not quotes.
 
 ## Running it
 
